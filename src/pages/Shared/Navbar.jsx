@@ -2,13 +2,17 @@ import { Link, NavLink } from "react-router-dom";
 import { IoClose } from "react-icons/io5";
 import { FiMenu } from "react-icons/fi";
 import { useEffect, useState } from "react";
+import useAuth from "../../hooks/useAuth";
+import { FiShoppingCart } from "react-icons/fi";
+import useCart from "../../hooks/useCart";
 
 const Navbar = () => {
-    const [user, setUser] = useState([])
-    // const { user, logOut } = useAuth();
+    const { user, logOut } = useAuth();
     const [open, setOpen] = useState(false);
     const localTheme = localStorage.getItem('theme')
     const [theme, setTheme] = useState(localTheme ? localTheme : 'light');
+    const {cart} = useCart();
+    console.log(cart)
 
     useEffect(() => {
         localStorage.setItem('theme', theme)
@@ -28,11 +32,17 @@ const Navbar = () => {
         <NavLink to="/" className={({ isActive }) => isActive ? "text-yellow-400 " : ""}>Home</NavLink>
         <NavLink to="/menu" className={({ isActive }) => isActive ? "text-yellow-400 " : ""}>Menu</NavLink>
         <NavLink to="/order" className={({ isActive }) => isActive ? "text-yellow-400 " : ""}>Order</NavLink>
-        <NavLink to="/allJobs" className={({ isActive }) => isActive ? "text-yellow-400 " : ""}>Contact Us</NavLink>
+        <NavLink to="/" className={({ isActive }) => isActive ? "text-yellow-400 " : ""}>Contact Us</NavLink>
+        <NavLink to="/dashboard/cart">
+            <button className="flex gap-1 items-center">
+                <FiShoppingCart />
+                <div className="badge badge-secondary">{cart?.length}</div>
+            </button>
+        </NavLink>
     </>
-    // const handleLogOut = () => {
-    //     logOut()
-    // }
+    const handleLogOut = () => {
+        logOut()
+    }
     return (
         <div className='navbar shadow-sm fixed z-10 bg-opacity-40 bg-black text-white md:px-5 lg:px-12'>
             <div className='flex-1'>
@@ -53,7 +63,7 @@ const Navbar = () => {
             </div>
             <div className='flex-none flex items-center gap-1 md:gap-0'>
                 <ul className='menu menu-horizontal items-center px-2 text-lg'>
-                    <div className="hidden lg:flex gap-5 pr-4">
+                    <div className="hidden lg:flex gap-5 pr-4 items-center">
                         {links}
                     </div>
                     {
@@ -103,7 +113,7 @@ const Navbar = () => {
                                 <Link to="/myProfile">My Profile</Link>
                             </li>
                             <li className='mt-2'>
-                                <button className='bg-gray-200 block text-center'>Logout</button>
+                                <button onClick={handleLogOut} className='bg-gray-200 block text-center'>Logout</button>
                             </li>
                         </ul>
                     </div>

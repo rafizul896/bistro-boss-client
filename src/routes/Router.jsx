@@ -4,13 +4,17 @@ import ErrorPage from "../pages/ErrorPage";
 import Home from "../pages/Home/Home";
 import Menu from "../pages/Menu/Menu";
 import Order from "../pages/Order/Order";
+import Login from "../pages/Authenication/Login";
+import Register from "../pages/Authenication/Register";
+import Dashboard from "../layout/Dashboard";
+import Cart from "../dashboard/Cart";
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <Root/>,
+        element: <Root />,
         errorElement: <ErrorPage></ErrorPage>,
-        children:[
+        children: [
             {
                 path: "/",
                 element: <Home></Home>
@@ -26,6 +30,24 @@ const router = createBrowserRouter([
             {
                 path: "/order/:category",
                 element: <Order></Order>
+            },
+            {
+                path: "/login",
+                element: <Login></Login>
+            },
+            {
+                path: 'register',
+                element: <Register></Register>
+            },
+        ]
+    },
+    {
+        path: '/dashboard',
+        element: <Dashboard></Dashboard>,
+        children: [
+            {
+                path:'/dashboard/cart',
+                element: <Cart></Cart>
             }
         ]
     }

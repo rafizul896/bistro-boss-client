@@ -11,7 +11,7 @@ import { useParams } from 'react-router-dom';
 const Order = () => {
     const categories = ['salad','pizza','soups','desserts','drinks']
     const {category} = useParams();
-    const initialIndex = categories.indexOf(category)
+    const initialIndex = categories.indexOf(category ? category : "salad")
     const [tabIndex, setTabIndex] = useState(initialIndex);
     
     const { menu } = useMenu();
@@ -27,7 +27,7 @@ const Order = () => {
             </Helmet>
             <Cover img={orderCover} title={'order food'}></Cover>
 
-            <Tabs selectedIndex={tabIndex} onSelect={(index) => setTabIndex(index)}>
+            <Tabs className="flex flex-col justify-center items-center gap-5 md:gap-0" selectedIndex={tabIndex} onSelect={(index) => setTabIndex(index)}>
                 <TabList className='md:flex justify-center mt-10 md:my-10'>
                     <Tab>SALAD</Tab>
                     <Tab>PIZZA</Tab>
