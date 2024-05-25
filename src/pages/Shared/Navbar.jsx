@@ -12,7 +12,6 @@ const Navbar = () => {
     const localTheme = localStorage.getItem('theme')
     const [theme, setTheme] = useState(localTheme ? localTheme : 'light');
     const {cart} = useCart();
-    console.log(cart)
 
     useEffect(() => {
         localStorage.setItem('theme', theme)

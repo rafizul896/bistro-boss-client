@@ -5,8 +5,10 @@ import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import useAuth from '../../hooks/useAuth';
 import { toast } from 'react-toastify';
+import useAxiosPublic from '../../hooks/useAxiosPublic';
 
 const Login = () => {
+    const axiosPublic = useAxiosPublic()
     const navigate = useNavigate();
     const location = useLocation();
     const { signIn, googleLogin } = useAuth();
@@ -14,9 +16,9 @@ const Login = () => {
     const [disabled, setDisabled] = useState(true);
     const from = location.state || '/'
 
-        useEffect(() => {
-            loadCaptchaEnginge(6);
-        }, []);
+    useEffect(() => {
+        loadCaptchaEnginge(6);
+    }, []);
 
     const handleValidateCaptcha = (e) => {
         const userCaptchaValue = e.target.value;
@@ -54,8 +56,15 @@ const Login = () => {
 
     const handleGoogleLogin = async () => {
         try {
-            const result = await googleLogin();
-            console.log(result)
+            const { user } = await googleLogin();
+            const userInfo = {
+                name: user?.displayName,
+                email: user?.email
+            }
+            await axiosPublic.post('/users', userInfo)
+                .then(res => {
+                    console.log(res.data);
+                })
             navigate(from)
             toast.success('Success', {
                 position: "top-center",

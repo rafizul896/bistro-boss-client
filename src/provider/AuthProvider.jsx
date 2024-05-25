@@ -1,6 +1,7 @@
 import { GoogleAuthProvider, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from "firebase/auth";
 import { createContext, useEffect, useState } from "react";
 import auth from "../firebase/firebase.init";
+import useAxiosPublic from "../hooks/useAxiosPublic";
 
 export const AuthContext = createContext(null)
 
@@ -8,6 +9,7 @@ const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const googleProvider = new GoogleAuthProvider();
+    const axiosPublic = useAxiosPublic()
 
     const createUser = (email, password) => {
         setLoading(true)
@@ -29,7 +31,7 @@ const AuthProvider = ({ children }) => {
 
     const googleLogin = () => {
         setLoading(true)
-        return signInWithPopup(auth,googleProvider)
+        return signInWithPopup(auth, googleProvider)
     }
 
     const logOut = () => {
@@ -38,15 +40,28 @@ const AuthProvider = ({ children }) => {
     }
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            setUser(currentUser)
-            console.log('current user => ', currentUser)
-            setLoading(false)
+        const unSubscribe = onAuthStateChanged(auth, currentUser => {
+            const userEmail = currentUser?.email || user?.email;
+            const loggedUser = { email: userEmail }
+            setUser(currentUser);
+            setLoading(false);
+            // token
+            if (currentUser) {
+                axiosPublic.post('/jwt', loggedUser, { withCredentials: true })
+                .then(res => {
+                    if(res.data.token){
+                        localStorage.setItem('token',res.data.token)
+                    }
+                })
+            }
+            else {
+                localStorage.removeItem('token')
+            }
         })
         return () => {
-            return unsubscribe();
+            return unSubscribe();
         }
-    }, [])
+    }, [axiosPublic, user])
 
     const authInfo = {
         user,

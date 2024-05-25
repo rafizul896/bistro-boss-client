@@ -1,13 +1,17 @@
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import useAuth from "../../hooks/useAuth";
 import { useState } from "react";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { toast } from "react-toastify";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
 
 const Register = () => {
+    const axiosPublic = useAxiosPublic()
     const { createUser, updateUserProfile, setUser, googleLogin } = useAuth()
     const [show, setShow] = useState(false);
-    const navigate = useNavigate()
+    const location = useLocation();
+    const navigate = useNavigate();
+    const form = location?.state || '/'
 
     const handleCreateUser = async (e) => {
         e.preventDefault();
@@ -23,10 +27,22 @@ const Register = () => {
             console.log(result);
             await updateUserProfile(name, photo);
             setUser({ ...user, photoURL: photo, displayName: name })
-            toast.success('Create succesfully', {
-                position: "top-center",
-                theme: "light",
-            });
+            // create user entry in the database
+            const userInfo = {
+                name,
+                email,
+            }
+            await axiosPublic.post('/users', userInfo)
+                .then(res => {
+                    if (res.data.insertedId) {
+                        toast.success('Create succesfully', {
+                            position: "top-center",
+                            theme: "light",
+                        });
+                        navigate(form)
+                    }
+                })
+
         }
         catch (err) {
             console.log(err);
@@ -38,8 +54,16 @@ const Register = () => {
 
     const handleGoogleLogin = async () => {
         try {
-            await googleLogin()
-            navigate('/')
+            const { user } = await googleLogin()
+            const userInfo = {
+                name: user?.displayName,
+                email: user?.email
+            }
+            await axiosPublic.post('/users', userInfo)
+            .then(res => {
+                console.log(res.data);
+            })
+            navigate(form)
             toast.success('Success', {
                 position: "top-center",
                 theme: "light"
