@@ -79,12 +79,14 @@ const AddItems = () => {
                                     defaultValue='default'
                                     className='border p-3 rounded-md bg-white border-gray-200  focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40  focus:outline-none focus:ring'
                                 >
-                                    <option value='default'>Category</option>
+                                    <option value=''>Category</option>
                                     <option value='salad'>Salad</option>
                                     <option value='pizza'>Pizza</option>
-                                    <option value='soups'>Soups</option>
-                                    <option value='desserts'>Desserts</option>
+                                    <option value='soup'>Soups</option>
+                                    <option value='dessert'>Desserts</option>
                                     <option value='drinks'>Drinks</option>
+                                    <option value='popular'>Popular</option>
+                                    <option value='offered'>Offered</option>
                                 </select>
                             </div>
 

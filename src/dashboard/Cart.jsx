@@ -4,11 +4,12 @@ import useCart from "../hooks/useCart";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import useAxiosSecure from "../hooks/useAxiosSecure";
+import { Link } from "react-router-dom";
 
 const Cart = () => {
     const axiosSecure = useAxiosSecure()
-    const { cart,refetch } = useCart();
-    
+    const { cart, refetch } = useCart();
+
     const handleDelete = (id) => {
         console.log(id)
         Swal.fire({
@@ -33,7 +34,7 @@ const Cart = () => {
                     }
                 }
                 catch (err) {
-                    toast.error(err?.message,{
+                    toast.error(err?.message, {
                         position: "top-center"
                     })
                 }
@@ -49,7 +50,13 @@ const Cart = () => {
                 <div className="uppercase text-xl md:text-2xl font-semibold flex justify-between items-center">
                     <h1>total orders: {cart.length}</h1>
                     <h1>total price: ${cart.reduce((acc, curr) => acc + curr.price, 0)}</h1>
-                    <button className="px-4 pt-.5 pb-2 rounded-md bg-[#d1a054] text-white">pay</button>
+                    {cart.length ?
+                        <Link to='/dashboard/payment'>
+                            <button className="px-4 pt-.5 pb-2 rounded-md bg-[#d1a054] text-white">pay</button>
+                        </Link>
+                        :
+                        <button disabled className="cursor-not-allowed px-4 pt-.5 pb-2 rounded-md bg-[#d1a054] text-white">pay</button>
+                    }
                 </div>
                 <div className="overflow-x-auto mt-5">
                     <table className="table">

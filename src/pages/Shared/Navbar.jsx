@@ -5,13 +5,15 @@ import { useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth";
 import { FiShoppingCart } from "react-icons/fi";
 import useCart from "../../hooks/useCart";
+import useAdmin from "../../hooks/useAdmin";
 
 const Navbar = () => {
+    const { isAdmin } = useAdmin()
     const { user, logOut } = useAuth();
     const [open, setOpen] = useState(false);
     const localTheme = localStorage.getItem('theme')
     const [theme, setTheme] = useState(localTheme ? localTheme : 'light');
-    const {cart} = useCart();
+    const { cart } = useCart();
 
     useEffect(() => {
         localStorage.setItem('theme', theme)
@@ -31,7 +33,13 @@ const Navbar = () => {
         <NavLink to="/" className={({ isActive }) => isActive ? "text-yellow-400 " : ""}>Home</NavLink>
         <NavLink to="/menu" className={({ isActive }) => isActive ? "text-yellow-400 " : ""}>Menu</NavLink>
         <NavLink to="/order" className={({ isActive }) => isActive ? "text-yellow-400 " : ""}>Order</NavLink>
-        <NavLink to="/" className={({ isActive }) => isActive ? "text-yellow-400 " : ""}>Contact Us</NavLink>
+        {
+            user && isAdmin && <NavLink to="/dashboard/adminHome" className={({ isActive }) => isActive ? "text-yellow-400 " : ""}>Dashboard</NavLink>
+        }
+        {
+            user && !isAdmin && <NavLink to="/dashboard/userHome" className={({ isActive }) => isActive ? "text-yellow-400 " : ""}>Dashboard</NavLink>
+
+        }
         <NavLink to="/dashboard/cart">
             <button className="flex gap-1 items-center">
                 <FiShoppingCart />

@@ -44,22 +44,24 @@ const AuthProvider = ({ children }) => {
             const userEmail = currentUser?.email || user?.email;
             const loggedUser = { email: userEmail }
             setUser(currentUser);
-            setLoading(false);
+            // setLoading(false);
             // token
             if (currentUser) {
                 axiosPublic.post('/jwt', loggedUser, { withCredentials: true })
-                .then(res => {
-                    if(res.data.token){
-                        localStorage.setItem('token',res.data.token)
-                    }
-                })
+                    .then(res => {
+                        if (res.data.token) {
+                            localStorage.setItem('token', res.data.token);
+                            setLoading(false);
+                        }
+                    })
             }
             else {
                 localStorage.removeItem('token')
+                setLoading(false);
             }
         })
         return () => {
-            return unSubscribe();
+            unSubscribe();
         }
     }, [axiosPublic, user])
 
